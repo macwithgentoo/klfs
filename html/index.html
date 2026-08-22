@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KLFS Guide</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <main id="chapter-content">
+    <p>Loading chapter...</p>
+  </main>
+
+  <script>
+    async function loadChapter() {
+      const container = document.getElementById('chapter-content');
+
+      try {
+        // Fetch content from chapters/1 relative to the html folder
+        const response = await fetch('../chapters/1');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        let text = await response.text();
+
+        // Convert single quotes 'code' into <code> codeblocks
+        const formattedText = text.replace(/'([^'\n]+)'/g, '<code>$1</code>');
+
+        // Render as paragraphs
+        const paragraphs = formattedText
+          .split('\n\n')
+          .filter(p => p.trim() !== '')
+          .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+          .join('');
+
+        container.innerHTML = paragraphs;
+
+      } catch (error) {
+        container.innerHTML = `<p style="color: red;">Failed to load chapter 1: ${error.message}</p>`;
+      }
+    }
+
+    loadChapter();
+  </script>
+
+</body>
+</html>

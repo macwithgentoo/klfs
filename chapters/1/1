@@ -1,6 +1,6 @@
 Welcome to Kinda Linux From Scratch.
 This is how to build a minimal Linux distro
 
-'sudo mkdir -p /mnt/klfs'
+'mkdir -p /mnt/klfs'
 'export KLFS=/mnt/klfs'
 'echo "export KLFS=/mnt/klfs" >> ~/.bashrc'

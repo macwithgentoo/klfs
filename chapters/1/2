@@ -5,3 +5,7 @@ Now change directory into /mnt/klfs
 Create the essential root system directories:
 
 `mkdir -p $KLFS/bin $KLFS/sbin $KLFS/etc $KLFS/usr $KLFS/proc $KLFS/dev $KLFS/home $KLFS/tmp`
+
+Create libary directorys
+'mkdir -p $KLFS/lib'
+'mkdir -p $KLFS/lib64'

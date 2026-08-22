@@ -1,0 +1,29 @@
+body {
+  font-family: sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background-color: #fff;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Style single-quoted text as inline code blocks */
+p {
+  white-space: pre-wrap;
+}
+
+/* Base style for elements wrapped in quotes or standard code tags */
+code, pre {
+  font-family: monospace;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.9em;
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+}

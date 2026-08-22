@@ -1,0 +1,27 @@
+Copy Compiler and Build Tools from Gentoo Host
+
+1. Copy core build executables:
+
+`cp -av /usr/bin/gcc $KLFS/usr/bin/`
+`cp -av /usr/bin/g++ $KLFS/usr/bin/`
+`cp -av /usr/bin/make $KLFS/usr/bin/`
+`cp -av /usr/bin/as $KLFS/usr/bin/`
+`cp -av /usr/bin/ld $KLFS/usr/bin/`
+
+2. Symlink binaries to standard locations:
+
+`ln -sf /usr/bin/gcc $KLFS/bin/cc`
+`ln -sf /usr/bin/make $KLFS/bin/make`
+
+3. Copy toolchain shared libraries:
+
+`cp -av /usr/lib64/libgmp.so* $KLFS/usr/lib64/`
+`cp -av /usr/lib64/libmpfr.so* $KLFS/usr/lib64/`
+`cp -av /usr/lib64/libmpc.so* $KLFS/usr/lib64/`
+`cp -av /usr/lib64/libz.so* $KLFS/usr/lib64/`
+`cp -av /usr/lib64/libzstd.so* $KLFS/usr/lib64/`
+
+4. Copy GCC internal headers and CRTs (critical for linking):
+
+`cp -av --parents /usr/lib/gcc $KLFS/`
+`cp -av --parents /usr/include $KLFS/`

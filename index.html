@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KLFS - Documentation Index</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    ul { list-style-type: none; padding: 0; }
+    li { margin: 0.5rem 0; }
+    a { text-decoration: none; color: #0066cc; font-weight: bold; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <h1>KLFS Documentation Index</h1>
+  <main id="file-list">
+    <p>Loading HTML files...</p>
+  </main>
+
+  <script>
+    // List your html directory pages here if directory browsing is disabled on your server
+    const knownPages = [
+      'index.html',
+      'chapter1.html',
+      'chapter2.html',
+      'install.html'
+    ];
+
+    async function loadHtmlDirectory() {
+      const container = document.getElementById('file-list');
+
+      try {
+        // Attempt to fetch the directory listing from /html
+        const response = await fetch('./html/');
+        
+        if (response.ok) {
+          const text = await response.text();
+          
+          // Parse links from the server directory listing HTML
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(text, 'text/html');
+          const links = Array.from(doc.querySelectorAll('a'))
+            .map(a => a.getAttribute('href'))
+            .filter(href => href && href.endsWith('.html') && href !== 'index.html');
+
+          if (links.length > 0) {
+            renderList(links);
+            return;
+          }
+        }
+      } catch (e) {
+        // Fall back to knownPages array if directory indexing is blocked
+      }
+
+      // Fallback renderer
+      renderList(knownPages);
+    }
+
+    function renderList(files) {
+      const container = document.getElementById('file-list');
+      if (files.length === 0) {
+        container.innerHTML = '<p>No HTML files found in <code>/html</code>.</p>';
+        return;
+      }
+
+      const listHTML = '<ul>' + files.map(file => {
+        const cleanName = file.replace('./', '').replace('.html', '');
+        return `<li>📄 <a href="./html/${file}">${cleanName}</a></li>`;
+      }).join('') + '</ul>';
+
+      container.innerHTML = listHTML;
+    }
+
+    loadHtmlDirectory();
+  </script>
+
+</body>
+</html>

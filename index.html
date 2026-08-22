@@ -5,6 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KLFS - Kinda Linux From Scratch</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+    button, select {
+      padding: 0.5rem 0.8rem;
+      font-family: sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .page-select-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -12,38 +40,110 @@
     <p>Loading KLFS documentation...</p>
   </main>
 
+  <nav class="nav-controls">
+    <button id="prev-btn" onclick="changePage(-1)">← Previous</button>
+    
+    <div class="page-select-container">
+      <label for="page-select">Page:</label>
+      <select id="page-select" onchange="jumpToPage(this.value)"></select>
+    </div>
+
+    <button id="next-btn" onclick="changePage(1)">Next →</button>
+  </nav>
+
   <script>
-    async function loadWelcomeChapter() {
+    const TOTAL_PAGES = 20;
+
+    // Get current page from URL ?page=X or default to 1
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = parseInt(urlParams.get('page')) || 1;
+
+    // Populate dropdown selection menu dynamically
+    function initDropdown() {
+      const select = document.getElementById('page-select');
+      select.innerHTML = '';
+      for (let i = 1; i <= TOTAL_PAGES; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${i} / ${TOTAL_PAGES}`;
+        select.appendChild(opt);
+      }
+    }
+
+    async function loadPage(pageNum) {
       const container = document.getElementById('chapter-content');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const select = document.getElementById('page-select');
+
+      // Keep page within boundaries
+      if (pageNum < 1) pageNum = 1;
+      if (pageNum > TOTAL_PAGES) pageNum = TOTAL_PAGES;
+      currentPage = pageNum;
+
+      // Sync browser history state and dropdown selector
+      window.history.pushState({}, '', `?page=${currentPage}`);
+      select.value = currentPage;
+
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === TOTAL_PAGES;
 
       try {
-        // Fetch directly from chapters/1/Welcome
-        const response = await fetch('./chapters/1/Welcome');
+        // Fetch from subfolder chapters/1/<pageNum>
+        const response = await fetch(`chapters/1/${currentPage}`);
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        let text = await response.text();
+        const rawText = await response.text();
 
-        // Format single quotes 'code' into <code> elements
-        const formattedText = text.replace(/'([^'\n]+)'/g, '<code>$1</code>');
+        // 1. Escape unsafe HTML tags
+        let text = rawText
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
 
-        // Split double line breaks into paragraphs
-        const paragraphs = formattedText
+        // 2. Convert backticks `code` into <code> blocks
+        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        // 3. Convert single quotes 'code' into <code> blocks
+        text = text.replace(/'([^'\n]+)'/g, '<code>$1</code>');
+
+        // 4. Render text paragraphs
+        const paragraphs = text
           .split(/\n\s*\n/)
           .filter(p => p.trim() !== '')
           .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
           .join('');
 
         container.innerHTML = paragraphs;
+        window.scrollTo(0, 0);
 
       } catch (error) {
-        container.innerHTML = `<p style="color: red;">Failed to load chapter: ${error.message}</p>`;
+        container.innerHTML = `
+          <p style="color: red; font-weight: bold;">Failed to load page ${currentPage}</p>
+          <p>Error details: <code>${error.message}</code></p>
+          <p>Ensure file <code>chapters/1/${currentPage}</code> exists on your branch.</p>
+        `;
       }
     }
 
-    loadWelcomeChapter();
+    function changePage(delta) {
+      loadPage(currentPage + delta);
+    }
+
+    function jumpToPage(pageNum) {
+      loadPage(parseInt(pageNum));
+    }
+
+    window.onpopstate = () => {
+      const params = new URLSearchParams(window.location.search);
+      loadPage(parseInt(params.get('page')) || 1);
+    };
+
+    initDropdown();
+    loadPage(currentPage);
   </script>
 
 </body>

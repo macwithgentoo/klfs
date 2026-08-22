@@ -1,2 +1,2 @@
 # klfs
-Kinda LFS
+## Build a simple Linux distro from BusyBox

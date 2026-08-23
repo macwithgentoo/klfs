@@ -1,0 +1,19 @@
+Installing the Kernel and System Modules
+
+1. Create the boot directory in your target environment:
+
+`mkdir -p /boot`
+
+2. Copy the Gentoo binary kernel and initramfs images from the host system into /boot:
+
+`cp -av /boot/vmlinuz* $KLFS/boot/`
+`cp -av /boot/initramfs* $KLFS/boot/`
+
+3. Copy the compiled kernel modules to match your kernel version:
+
+`cp -av /lib/modules/* $KLFS/lib/modules/`
+
+4. Verify that the kernel image and kernel module directories are in place:
+
+`ls -lh /boot`
+`ls -lh /lib/modules`

@@ -6,20 +6,37 @@
   <title>KLFS - Kinda Linux From Scratch</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      line-height: 1.6;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+    .banner-logo {
+      max-width: 100%;
+      height: auto;
+      max-height: 140px;
+    }
     .nav-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 2rem;
+      margin-top: 2.5rem;
       padding-top: 1rem;
       border-top: 1px solid #ddd;
     }
     button, select {
       padding: 0.5rem 0.8rem;
-      font-family: sans-serif;
       font-size: 0.9rem;
       cursor: pointer;
-      background-color: #f0f0f0;
+      background-color: #f4f4f4;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
@@ -32,9 +49,21 @@
       align-items: center;
       gap: 0.5rem;
     }
+    code {
+      background-color: #f4f4f4;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: monospace;
+    }
   </style>
 </head>
 <body>
+
+  <header>
+    <a href="index.html">
+      <img src="logo.jpg" alt="Kinda Linux From Scratch" class="banner-logo">
+    </a>
+  </header>
 
   <main id="chapter-content">
     <p>Loading KLFS documentation...</p>
@@ -54,11 +83,9 @@
   <script>
     const TOTAL_PAGES = 20;
 
-    // Get current page from URL ?page=X or default to 1
     const urlParams = new URLSearchParams(window.location.search);
     let currentPage = parseInt(urlParams.get('page')) || 1;
 
-    // Populate dropdown selection menu dynamically
     function initDropdown() {
       const select = document.getElementById('page-select');
       select.innerHTML = '';
@@ -76,12 +103,10 @@
       const nextBtn = document.getElementById('next-btn');
       const select = document.getElementById('page-select');
 
-      // Keep page within boundaries
       if (pageNum < 1) pageNum = 1;
       if (pageNum > TOTAL_PAGES) pageNum = TOTAL_PAGES;
       currentPage = pageNum;
 
-      // Sync browser history state and dropdown selector
       window.history.pushState({}, '', `?page=${currentPage}`);
       select.value = currentPage;
 
@@ -89,7 +114,6 @@
       nextBtn.disabled = currentPage === TOTAL_PAGES;
 
       try {
-        // Fetch from subfolder chapters/1/<pageNum>
         const response = await fetch(`chapters/1/${currentPage}`);
         
         if (!response.ok) {
@@ -98,19 +122,20 @@
 
         const rawText = await response.text();
 
-        // 1. Escape unsafe HTML tags
+        // 1. Escape unsafe HTML
         let text = rawText
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;');
 
-        // 2. Convert backticks `code` into <code> blocks
-        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // 2. Parse Markdown images ![alt](url)
+        text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;">');
 
-        // 3. Convert single quotes 'code' into <code> blocks
+        // 3. Parse backticks `code` and single quotes 'code'
+        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
         text = text.replace(/'([^'\n]+)'/g, '<code>$1</code>');
 
-        // 4. Render text paragraphs
+        // 4. Render paragraphs
         const paragraphs = text
           .split(/\n\s*\n/)
           .filter(p => p.trim() !== '')

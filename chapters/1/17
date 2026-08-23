@@ -1,0 +1,25 @@
+Compiling GRUB2 Bootloader inside /sources
+
+1. Navigate to the sources directory and download GRUB2:
+
+`cd /sources`
+`curl -O https://ftp.gnu.org/gnu/grub/grub-2.12.tar.xz`
+
+2. Extract the archive and enter the build directory:
+
+`tar -xf grub-2.12.tar.xz`
+`cd grub-2.12`
+
+3. Configure GRUB for BIOS/MBR and x86_64 systems:
+
+`./configure --prefix=/usr --sysconfdir=/etc --disable-werror`
+
+4. Compile and install GRUB binaries and modules:
+
+`make -j$(nproc)`
+`make install`
+
+5. Clean up the build workspace:
+
+`cd /sources`
+`rm -rf grub-2.12*`

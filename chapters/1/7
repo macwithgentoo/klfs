@@ -1,4 +1,4 @@
-Installing the Kernel and System Modules
+Installing Kernel, Modules, and Host Build Binaries
 
 1. Create the boot directory in your target environment:
 
@@ -6,14 +6,19 @@ Installing the Kernel and System Modules
 
 2. Copy the Gentoo binary kernel and initramfs images from the host system into /boot:
 
-`cp -av /boot/vmlinuz* $KLFS/boot/`
-`cp -av /boot/initramfs* $KLFS/boot/`
+`cp -av /boot/vmlinuz* /boot/`
+`cp -av /boot/initramfs* /boot/`
 
 3. Copy the compiled kernel modules to match your kernel version:
 
-`cp -av /lib/modules/* $KLFS/lib/modules/`
+`cp -av /lib/modules/* /lib/modules/`
 
-4. Verify that the kernel image and kernel module directories are in place:
+4. Copy GNU Make binary from host system into target /usr/bin:
+
+`cp -av /usr/bin/make /usr/bin/`
+
+5. Verify that the kernel, modules, and build binary are in place:
 
 `ls -lh /boot`
 `ls -lh /lib/modules`
+`make --version`

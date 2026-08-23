@@ -1,8 +1,8 @@
-Installing Kernel, Modules, and Host Build Binaries
+**Installing Kernel, Modules, and Host Build Binaries**
 
-1. Create the boot directory in your target environment:
+1. Create necessary target directories:
 
-`mkdir -p /boot`
+`mkdir -p /boot /lib/modules /usr/bin /lib64 /usr/lib`
 
 2. Copy the Gentoo binary kernel and initramfs images from the host system into /boot:
 
@@ -13,12 +13,19 @@ Installing Kernel, Modules, and Host Build Binaries
 
 `cp -av /lib/modules/* /lib/modules/`
 
-4. Copy GNU Make binary from host system into target /usr/bin:
+4. Copy GNU Make and Curl binaries from host system into target /usr/bin (resolving symlinks):
 
-`cp -av /usr/bin/make /usr/bin/`
+`rm -f /mnt/klfs/usr/bin/make /mnt/klfs/usr/bin/curl`
+`cp -aL /usr/bin/make /mnt/klfs/usr/bin/make`
+`cp -aL /usr/bin/curl /mnt/klfs/usr/bin/curl`
 
-5. Verify that the kernel, modules, and build binary are in place:
+5. Copy all dynamic shared library dependencies for the build binaries into the target environment:
+
+`for bin in /usr/bin/make /usr/bin/curl; do ldd "$bin" | awk '{print $3}' | grep '^/' | while read -r lib; do if [ -f "$lib" ]; then cp -aL "$lib" /mnt/klfs/lib64/ 2>/dev/null || cp -aL "$lib" /mnt/klfs/usr/lib/ 2>/dev/null; fi; done; done`
+
+6. Verify that the kernel, modules, and build binaries are in place:
 
 `ls -lh /boot`
 `ls -lh /lib/modules`
 `make --version`
+`curl --version`

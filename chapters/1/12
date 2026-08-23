@@ -1,0 +1,22 @@
+Compiling util-linux inside /sources
+
+1. Navigate to the sources directory and download util-linux:
+
+`cd /sources`
+`curl -O https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.39/util-linux-2.39.3.tar.gz`
+
+2. Extract the archive and enter the build directory:
+
+`tar -xf util-linux-2.39.3.tar.gz`
+`cd util-linux-2.39.3`
+
+3. Configure, compile, and install core utilities (mount, fdisk, blkid):
+
+`./configure --prefix=/usr --sysconfdir=/etc --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python`
+`make -j$(nproc)`
+`make install`
+
+4. Clean up the build directory:
+
+`cd /sources`
+`rm -rf util-linux-2.39.3*`

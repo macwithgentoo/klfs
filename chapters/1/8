@@ -8,3 +8,19 @@ Creating Core System Configuration Files
 `127.0.0.1 localhost`
 `127.0.1.1 klfs`
 `EOF`
+
+Setting Up the Build Directory for Source Code
+
+1. Create a dedicated sources directory and build workspace inside the chroot:
+
+`mkdir -pv /sources`
+`chmod -v a+wt /sources`
+
+2. Set environment variables to keep build directories organized:
+
+`export SRC=/sources`
+`cd $SRC`
+
+3. Verify the source workspace directory:
+
+`ls -ld /sources`

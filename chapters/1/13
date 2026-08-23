@@ -1,0 +1,40 @@
+Creating User Accounts, Groups, and Root Credentials
+
+1. Create /etc/passwd with root and standard pseudo-user accounts:
+
+cat << 'EOF' > /etc/passwd
+root:x:0:0:root:/root:/bin/sh
+daemon:x:1:1:daemon:/usr/sbin:/bin/false
+bin:x:2:2:bin:/bin:/bin/false
+nobody:x:65534:65534:nobody:/:/bin/false
+EOF
+
+2. Create /etc/group with core system security groups:
+
+cat << 'EOF' > /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+wheel:x:10:
+nogroup:x:65534:
+EOF
+
+3. Initialize shadow authentication with secure permissions:
+
+touch /etc/shadow
+chmod 600 /etc/shadow
+
+cat << 'EOF' > /etc/shadow
+root::19000:0:99999:7:::
+daemon:*:19000:0:99999:7:::
+bin:*:19000:0:99999:7:::
+nobody:*:19000:0:99999:7:::
+EOF
+
+4. Set password for the root user:
+
+passwd root

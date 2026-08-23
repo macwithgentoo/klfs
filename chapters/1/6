@@ -1,14 +1,22 @@
-Reinstall BusyBox Inside the Chroot Environment
+Reinstall BusyBox and Rebuild System Symlinks Inside Chroot
 
-1. Re-install BusyBox applets to ensure all system utilities (ls, cat, sh, vi) are cleanly symlinked:
+1. Re-install BusyBox applets across system directories:
 
 `busybox --install -s /bin`
+`busybox --install -s /sbin`
+`busybox --install -s /usr/bin`
+`busybox --install -s /usr/sbin`
 
-2. Verify essential applet symlinks are functional:
+2. Explicitly symlink critical shell binaries to BusyBox:
+
+`ln -sf /bin/busybox /bin/sh`
+`ln -sf /bin/busybox /bin/bash`
+
+3. Verify key applet symlinks:
 
 `ls -l /bin/sh`
 `ls -l /bin/ls`
 
-3. Test core functionality inside the target environment:
+4. Test core functionality inside the environment:
 
 `busybox | head -n 10`

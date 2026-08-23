@@ -1,0 +1,16 @@
+Installing GRUB to the Target Boot Device
+
+1. Verify that pseudo-filesystems (/dev, /proc, /sys) and EFI variables are accessible inside the environment.
+
+2. Create the target GRUB directory and EFI mount point:
+
+`mkdir -p /boot/grub /boot/efi`
+
+3. Install the GRUB bootloader structures to the EFI system partition:
+
+`grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=KLFS`
+
+4. Verify that GRUB boot binaries and EFI modules were created successfully:
+
+`ls -lh /boot/grub/x86_64-efi`
+`ls -lh /boot/efi/EFI/KLFS`

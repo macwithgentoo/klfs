@@ -1,0 +1,22 @@
+Exiting Chroot Environment and First Boot
+
+1. Clean up temporary source files and build artifacts inside /sources:
+
+`rm -rf /sources/*`
+
+2. Exit the chroot environment back to the host system:
+
+`exit`
+
+3. Unmount pseudo-filesystems and target partitions cleanly from the host:
+
+`umount -vR /mnt/klfs/boot/efi`
+`umount -vR /mnt/klfs/dev/pts`
+`umount -vR /mnt/klfs/dev`
+`umount -vR /mnt/klfs/proc`
+`umount -vR /mnt/klfs/sys`
+`umount -vR /mnt/klfs`
+
+4. Reboot into your new Kinda Linux From Scratch system:
+
+`reboot`

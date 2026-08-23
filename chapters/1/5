@@ -14,4 +14,4 @@ Mount Virtual Filesystems and Enter Chroot Environment
 
 3. Enter the chroot environment with clean environment variables:
 
-`chroot "$KLFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(klfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/sh`
+`chroot "$KLFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1="(klfs chroot) \u:\w\$"  PATH=/bin/busybox:/bin:/usr/bin:/sbin:/usr/sbin /bin/sh`

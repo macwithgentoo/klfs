@@ -1,0 +1,12 @@
+Compiling Baseline C Library Header Files and Runtime
+
+1. Download and extract clean Musl C library sources:
+
+`curl -O https://musl.libc.org/releases/musl-1.2.5.tar.gz`
+`tar -xf musl-1.2.5.tar.gz && cd musl-1.2.5`
+
+2. Configure and build libc:
+
+`./configure --prefix=/usr`
+`make -j$(nproc)`
+`make install`

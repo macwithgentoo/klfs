@@ -1,0 +1,17 @@
+Mount Virtual Filesystems and Enter Chroot Environment
+
+1. Copy host DNS settings so internet access works inside chroot:
+
+`cp -v /etc/resolv.conf $KLFS/etc/`
+
+2. Bind-mount host virtual pseudo-filesystems:
+
+`mount -v --bind /dev $KLFS/dev`
+`mount -v --bind /dev/pts $KLFS/dev/pts`
+`mount -vt proc proc $KLFS/proc`
+`mount -vt sysfs sysfs $KLFS/sys`
+`mount -vt tmpfs tmpfs $KLFS/run`
+
+3. Enter the chroot environment with clean environment variables:
+
+`chroot "$KLFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(klfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/sh`

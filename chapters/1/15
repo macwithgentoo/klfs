@@ -1,0 +1,54 @@
+Creating Boot Init Scripts and System Startup Configuration
+
+1. Create directory structure for init scripts and service runlevels:
+
+`mkdir -p /etc/init.d`
+`mkdir -p /etc/rc.d`
+
+2. Create the primary boot initialization script (/etc/init.d/rcS):
+
+cat << 'EOF' > /etc/init.d/rcS
+#!/bin/sh
+# Early system initialization script
+
+echo "Mounting kernel virtual filesystems..."
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mkdir -p /dev/pts /run
+mount -t devpts devpts /dev/pts
+mount -t tmpfs tmpfs /run
+
+echo "Initializing system hostname..."
+if [ -r /etc/hostname ]; then
+    hostname -F /etc/hostname
+fi
+
+echo "Mounting local filesystems..."
+mount -a
+
+echo "Starting system logging..."
+syslogd
+klogd
+
+echo "System initialization complete."
+EOF
+
+3. Make the rcS boot script executable:
+
+`chmod +x /etc/init.d/rcS`
+
+4. Symlink BusyBox init to /sbin/init:
+
+`ln -sf /bin/busybox /sbin/init`
+
+5. Create /etc/inittab to control system runlevels and shell spawning:
+
+cat << 'EOF' > /etc/inittab
+::sysinit:/etc/init.d/rcS
+::askfirst:-/bin/sh
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/umount -a -r
+EOF
+
+chmod 644 /etc/inittab

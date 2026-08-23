@@ -1,0 +1,10 @@
+Creating Core System Configuration Files
+
+1. Set up system hostname and hosts file:
+
+`echo "klfs" > /etc/hostname`
+
+`cat << 'EOF' > /etc/hosts`
+`127.0.0.1 localhost`
+`127.0.1.1 klfs`
+`EOF`

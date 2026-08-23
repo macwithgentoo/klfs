@@ -1,0 +1,27 @@
+Compiling e2fsprogs inside /sources
+
+1. Navigate to the sources directory and download e2fsprogs:
+
+`cd /sources`
+`curl -O https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.47.0/e2fsprogs-1.47.0.tar.gz`
+
+2. Extract the archive and enter the build directory:
+
+`tar -xf e2fsprogs-1.47.0.tar.gz`
+`cd e2fsprogs-1.47.0`
+
+3. Create a dedicated build directory:
+
+`mkdir build`
+`cd build`
+
+4. Configure, compile, and install e2fsprogs:
+
+`../configure --prefix=/usr --sysconfdir=/etc --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck`
+`make -j$(nproc)`
+`make install`
+
+5. Clean up the source directory:
+
+`cd /sources`
+`rm -rf e2fsprogs-1.47.0*`

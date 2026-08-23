@@ -1,0 +1,31 @@
+Compiling kmod inside /sources
+
+1. Navigate to the sources directory and download kmod:
+
+`cd /sources`
+`curl -O https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-31.tar.xz`
+
+2. Extract the archive and enter the build directory:
+
+`tar -xf kmod-31.tar.xz`
+`cd kmod-31`
+
+3. Configure, compile, and install kmod:
+
+`./configure --prefix=/usr --sysconfdir=/etc --bindir=/bin --with-zstd --with-xz --with-zlib`
+`make -j$(nproc)`
+`make install`
+
+4. Create essential module utility symlinks back to kmod:
+
+`ln -sf /bin/kmod /sbin/depmod`
+`ln -sf /bin/kmod /sbin/insmod`
+`ln -sf /bin/kmod /sbin/lsmod`
+`ln -sf /bin/kmod /sbin/modinfo`
+`ln -sf /bin/kmod /sbin/modprobe`
+`ln -sf /bin/kmod /sbin/rmmod`
+
+5. Clean up the build workspace:
+
+`cd /sources`
+`rm -rf kmod-31*`
